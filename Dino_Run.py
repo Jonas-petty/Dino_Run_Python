@@ -60,7 +60,7 @@ class Dino(pygame.sprite.Sprite):
         self.som_pulo = pygame.mixer.Sound(os.path.join(diretorio_sons, 'jump_sound.wav'))
         self.som_pulo.set_volume(1)
         self.imagens_jonas = []
-        for i in range(3):
+        for i in range(6):
             img = sprite_sheet.subsurface((i * 32, 0), (32, 32))
             img = pygame.transform.scale(img, (32 * 3, 32 * 3))
             self.imagens_jonas.append(img)
@@ -97,7 +97,7 @@ class Dino(pygame.sprite.Sprite):
 class Nuvens(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = sprite_sheet.subsurface((32 * 7, 0), (32, 32))
+        self.image = sprite_sheet.subsurface((32 * 10, 0), (32, 32))
         self.image = pygame.transform.scale(self.image, (32 * 3, 32 * 3))
         self.rect = self.image.get_rect()
         self.rect.y = randrange(50, 200, 50)
@@ -113,7 +113,7 @@ class Nuvens(pygame.sprite.Sprite):
 class Chao(pygame.sprite.Sprite):
     def __init__(self, pos_x):
         pygame.sprite.Sprite.__init__(self)
-        self.image = sprite_sheet.subsurface((32 * 6, 0), (32, 32))
+        self.image = sprite_sheet.subsurface((32 * 9, 0), (32, 32))
         self.image = pygame.transform.scale(self.image, (32 * 2, 32 * 2))
         self.rect = self.image.get_rect()
         self.rect.y = altura - 64
@@ -128,7 +128,7 @@ class Chao(pygame.sprite.Sprite):
 class Pau(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = sprite_sheet.subsurface((5 * 32, 0), (32, 32))
+        self.image = sprite_sheet.subsurface((8 * 32, 0), (32, 32))
         self.image = pygame.transform.scale(self.image, (32 * 2, 32 * 2))
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
@@ -147,7 +147,7 @@ class Pombo(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.imagens_pombo = []
-        for i in range(3, 5):
+        for i in range(6, 8):
             img = sprite_sheet.subsurface((i * 32, 0), (32, 32))
             img = pygame.transform.scale(img, (32*3, 32*3))
             self.imagens_pombo.append(img)
