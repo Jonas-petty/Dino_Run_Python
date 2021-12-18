@@ -11,6 +11,12 @@ diretorio_principal = os.path.dirname(__file__)
 diretorio_imagens = os.path.join(diretorio_principal, 'imagens')
 diretorio_sons = os.path.join(diretorio_principal, 'sons')
 
+pygame.mixer.music.set_volume(0.2)
+musica_de_fundo = pygame.mixer.music.load('Alceu Valença - Anunciação - Karaokê.mp3')
+pygame.mixer.music.play(-1)
+
+
+
 largura = 640
 altura = 480
 
@@ -52,6 +58,7 @@ def reiniciar_jogo():
     pau.rect.x = largura
     pombo.rect.x = largura
     escolha_obstaculo = choice([0, 1])
+    pygame.mixer.music.play(-1)
 
 
 class Dino(pygame.sprite.Sprite):
@@ -194,6 +201,10 @@ grupo_obstaculos.add(pau)
 grupo_obstaculos.add(pombo)
 
 relogio = pygame.time.Clock()
+
+imagem_fundo = pygame.image.load('moeda.bmp').convert()
+imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+
 while True:
     relogio.tick(30)
     tela.fill(azul)
@@ -213,6 +224,7 @@ while True:
 
     colisoes = pygame.sprite.spritecollide(dino, grupo_obstaculos, False, pygame.sprite.collide_mask)
 
+    tela.blit(imagem_fundo, (0,0))
     todas_as_sprites.draw(tela)
 
     if pau.rect.topright[0] <= 0 or pombo.rect.topright[0] <= 0:
@@ -229,15 +241,16 @@ while True:
     if colidiu == True:
         if pontos % 100 == 0:
             pontos += 1
-        game_over = exibe_mensagem('GAME OVER', 40, (0, 0, 0))
+        game_over = exibe_mensagem('GAME OVER', 40, (255, 255, 255))
         tela.blit(game_over, (largura//2, altura//2))
-        restart = exibe_mensagem('Precione r para reiniciar', 20, (0, 0, 0))
+        restart = exibe_mensagem('Precione r para reiniciar', 20, (255, 255, 255))
         tela.blit(restart, (largura//2, (altura//2) + 60))
+        pygame.mixer.music.stop()
 
     else:
-        pontos += 1
+        pontos += 0.2
         todas_as_sprites.update()
-        texto_pontos = exibe_mensagem(pontos, 40, (0, 0, 0))
+        texto_pontos = exibe_mensagem("%.0f" % pontos, 50, (255, 255, 255))
 
     if pontos % 100 == 0:
         som_pontuacao.play()
@@ -246,6 +259,6 @@ while True:
         else:
             velocidade_jogo += 1
 
-    tela.blit(texto_pontos, (520, 30))
+    tela.blit(texto_pontos, (largura/2, 30))
 
     pygame.display.flip()
