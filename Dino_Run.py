@@ -15,7 +15,7 @@ pygame.mixer.music.set_volume(0.2)
 musica_de_fundo = pygame.mixer.music.load('Alceu Valença - Anunciação - Karaokê.mp3')
 pygame.mixer.music.play(-1)
 
-
+gravidade = 0
 
 largura = 640
 altura = 480
@@ -217,6 +217,7 @@ while True:
                 if dino.rect.y != dino.pos_y_inicial:
                     pass
                 else:
+                    gravidade = -15
                     dino.pular()
 
             if event.key == K_r and colidiu == True:
@@ -226,6 +227,9 @@ while True:
 
     tela.blit(imagem_fundo, (0,0))
     todas_as_sprites.draw(tela)
+
+    gravidade += 1
+    dino.rect.y += gravidade
 
     if pau.rect.topright[0] <= 0 or pombo.rect.topright[0] <= 0:
         escolha_obstaculo = choice([0, 1])
