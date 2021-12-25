@@ -15,15 +15,13 @@ pygame.mixer.music.set_volume(0.2)
 musica_de_fundo = pygame.mixer.music.load('Alceu Valença - Anunciação - Karaokê.mp3')
 pygame.mixer.music.play(-1)
 
-
-
 largura = 640
 altura = 480
 
 azul = (0, 161, 254)
 
 tela = pygame.display.set_mode((largura, altura))
-pygame.display.set_caption('Dino Game')
+pygame.display.set_caption('Super Mário Recife')
 
 sprite_sheet = pygame.image.load(os.path.join(diretorio_imagens, 'sprites.png')).convert_alpha()
 
@@ -40,6 +38,12 @@ escolha_obstaculo = choice([0, 1])
 pontos = 0
 
 velocidade_jogo = 10
+
+def velocidade():
+    if pontos <= 50:
+        velocidade_jogo = 10
+    else:
+        velocidade_jogo = 50    
 
 
 def exibe_mensagem(msg, tamanho, cor):
@@ -77,7 +81,7 @@ class Dino(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.pos_y_inicial = altura - 74 - 96 // 2
-        self.rect.center = [100, altura - 74]
+        self.rect.center = [100, altura - 500]
         self.pulo = False
 
     def pular(self):
@@ -186,9 +190,9 @@ for i in range(4):
     nuvem = Nuvens()
     todas_as_sprites.add(nuvem)
 
-for i in range(largura * 2 // 64):
-    chao = Chao(i)
-    todas_as_sprites.add(chao)
+#for i in range(largura * 2 // 64):
+    #chao = Chao(i)
+    #todas_as_sprites.add(chao)
 
 pau = Pau()
 todas_as_sprites.add(pau)
@@ -202,12 +206,27 @@ grupo_obstaculos.add(pombo)
 
 relogio = pygame.time.Clock()
 
-imagem_fundo = pygame.image.load('moeda.bmp').convert()
-imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+
+def fundo():
+    if pontos >= 100:
+        imagem_fundo = pygame.image.load('MarcoZero.bmp').convert()
+        imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+        tela.blit(imagem_fundo, (0,0))
+        todas_as_sprites.draw(tela)
+        
+    if pontos >=0 and pontos <= 100:
+        imagem_fundo = pygame.image.load('moeda.bmp').convert()
+        imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+        tela.blit(imagem_fundo, (0,0))
+        todas_as_sprites.draw(tela)
+
 
 while True:
+
     relogio.tick(30)
     tela.fill(azul)
+    fundo()
+
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -223,9 +242,7 @@ while True:
                 reiniciar_jogo()
 
     colisoes = pygame.sprite.spritecollide(dino, grupo_obstaculos, False, pygame.sprite.collide_mask)
-
-    tela.blit(imagem_fundo, (0,0))
-    todas_as_sprites.draw(tela)
+    
 
     if pau.rect.topright[0] <= 0 or pombo.rect.topright[0] <= 0:
         escolha_obstaculo = choice([0, 1])
@@ -252,12 +269,13 @@ while True:
         todas_as_sprites.update()
         texto_pontos = exibe_mensagem("%.0f" % pontos, 50, (255, 255, 255))
 
-    if pontos % 100 == 0:
+    pontos = round(pontos, 2)
+
+    if pontos % 100 == 0.0:
         som_pontuacao.play()
-        if velocidade_jogo >= 23:
-            velocidade_jogo += 0
-        else:
-            velocidade_jogo += 1
+      
+        velocidade_jogo += 5
+        print("Adicionou 5")
 
     tela.blit(texto_pontos, (largura/2, 30))
 
