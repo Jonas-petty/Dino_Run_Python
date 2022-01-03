@@ -11,8 +11,8 @@ diretorio_principal = os.path.dirname(__file__)
 diretorio_imagens = os.path.join(diretorio_principal, 'imagens')
 diretorio_sons = os.path.join(diretorio_principal, 'sons')
 
-pygame.mixer.music.set_volume(0.2)
 musica_de_fundo = pygame.mixer.music.load('Alceu Valença - Anunciação - Karaokê.mp3')
+pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1)
 
 
