@@ -11,8 +11,8 @@ diretorio_principal = os.path.dirname(__file__)
 diretorio_imagens = os.path.join(diretorio_principal, 'imagens')
 diretorio_sons = os.path.join(diretorio_principal, 'sons')
 
-pygame.mixer.music.set_volume(0.2)
 musica_de_fundo = pygame.mixer.music.load('Alceu Valença - Anunciação - Karaokê.mp3')
+pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1)
 
 
@@ -84,7 +84,7 @@ class Dino(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.pos_y_inicial = altura - 74 - 96 // 2
-        self.rect.center = [100, altura - 500]
+        self.rect.center = [100, 500]
         self.pulo = False
 
     def pular(self):
@@ -92,15 +92,18 @@ class Dino(pygame.sprite.Sprite):
         self.som_pulo.play()
 
     def update(self):
-        if self.pulo == True:
+        if self.pulo:
             if self.rect.y <= 200:
                 self.pulo = False
             self.rect.y -= 20
-        else:
-            if self.rect.y < self.pos_y_inicial:
-                self.rect.y += 20
-            else:
-                self.rect.y = self.pos_y_inicial
+        # else:
+        #     if self.rect.y < self.pos_y_inicial:
+        #         self.rect.y += 20
+        #     else:
+        #         self.rect.y = self.pos_y_inicial
+
+        if self.rect.y > self.pos_y_inicial:
+            self.rect.y = self.pos_y_inicial
 
         if self.index_lista > 2:
             self.index_lista = 0
@@ -111,7 +114,7 @@ class Dino(pygame.sprite.Sprite):
 class Nuvens(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = sprite_sheet.subsurface((32 * 10, 0), (32, 32))
+        self.image = sprite_sheet.subsurface((32 * 12, 0), (32, 32))
         self.image = pygame.transform.scale(self.image, (32 * 3, 32 * 3))
         self.rect = self.image.get_rect()
         self.rect.y = randrange(50, 200, 50)
@@ -127,7 +130,7 @@ class Nuvens(pygame.sprite.Sprite):
 class Chao(pygame.sprite.Sprite):
     def __init__(self, pos_x):
         pygame.sprite.Sprite.__init__(self)
-        self.image = sprite_sheet.subsurface((32 * 9, 0), (32, 32))
+        self.image = sprite_sheet.subsurface((32 * 10, 0), (32, 32))
         self.image = pygame.transform.scale(self.image, (32 * 2, 32 * 2))
         self.rect = self.image.get_rect()
         self.rect.y = altura - 64
@@ -142,11 +145,16 @@ class Chao(pygame.sprite.Sprite):
 class Pau(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = sprite_sheet.subsurface((8 * 32, 0), (32, 32))
-        self.image = pygame.transform.scale(self.image, (32 * 2, 32 * 2))
-        self.rect = self.image.get_rect()
+        self.imagens_dog = []
+        for i in range(8, 10):
+            img = sprite_sheet.subsurface((i * 32, 0), (32, 32))
+            img = pygame.transform.scale(img, (32 * 2.5, 32 * 2.5))
+            self.imagens_dog.append(img)
+        self.index_lista = 0
+        self.image = self.imagens_dog[self.index_lista]
         self.mask = pygame.mask.from_surface(self.image)
         self.escolha = escolha_obstaculo
+        self.rect = self.image.get_rect()
         self.rect.center = (largura, altura - 60)
         self.rect.x = largura
 
@@ -155,6 +163,11 @@ class Pau(pygame.sprite.Sprite):
             if self.rect.topright[0] < 0:
                 self.rect.x = largura
             self.rect.x -= velocidade_jogo
+
+            if self.index_lista > 1:
+                self.index_lista = 0
+            self.index_lista += 0.25
+            self.image = self.imagens_dog[int(self.index_lista)]
 
 
 class Pombo(pygame.sprite.Sprite):
@@ -214,13 +227,13 @@ def fundo():
     if pontos >= 100:
         imagem_fundo = pygame.image.load('MarcoZero.bmp').convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
-        tela.blit(imagem_fundo, (0,0))
+        tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)
         
-    if pontos >=0 and pontos <= 100:
+    if 0 <= pontos <= 100:
         imagem_fundo = pygame.image.load('moeda.bmp').convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
-        tela.blit(imagem_fundo, (0,0))
+        tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)
 
 
@@ -235,18 +248,19 @@ while True:
             pygame.quit()
             exit()
         if event.type == KEYDOWN:
-            if event.key == K_SPACE and colidiu == False:
+            if event.key == K_SPACE and colidiu is False:
                 if dino.rect.y != dino.pos_y_inicial:
                     pass
                 else:
                     gravidade = -15
-                    dino.pular()
+                    dino.rect.y -= 10
+                    # gravidade = -15
+                    # dino.pular()
 
-            if event.key == K_r and colidiu == True:
+            if event.key == K_r and colidiu is True:
                 reiniciar_jogo()
 
     colisoes = pygame.sprite.spritecollide(dino, grupo_obstaculos, False, pygame.sprite.collide_mask)
-    
 
     gravidade += 1
     dino.rect.y += gravidade
@@ -258,11 +272,11 @@ while True:
         pau.escolha = escolha_obstaculo
         pombo.escolha = escolha_obstaculo
 
-    if colisoes and colidiu == False:
+    if colisoes and colidiu is False:
         som_colisao.play()
         colidiu = True
 
-    if colidiu == True:
+    if colidiu is True:
         if pontos % 100 == 0:
             pontos += 1
         game_over = exibe_mensagem('GAME OVER', 40, (255, 255, 255))
