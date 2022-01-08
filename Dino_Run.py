@@ -1,8 +1,10 @@
+import sys
 import pygame
 from pygame.locals import *
 from sys import exit
 import os
 from random import randrange, choice
+
 
 pygame.init()
 pygame.mixer.init()
@@ -10,8 +12,9 @@ pygame.mixer.init()
 diretorio_principal = os.path.dirname(__file__)
 diretorio_imagens = os.path.join(diretorio_principal, 'imagens')
 diretorio_sons = os.path.join(diretorio_principal, 'sons')
+diretorio_fundos = os.path.join(diretorio_principal, 'fundos')
 
-musica_de_fundo = pygame.mixer.music.load('Alceu Valença - Anunciação - Karaokê.mp3')
+musica_de_fundo = pygame.mixer.music.load(os.path.join(diretorio_sons, 'Alceu Valença - Anunciação - Karaokê.mp3'))
 pygame.mixer.music.set_volume(0.2)
 pygame.mixer.music.play(-1)
 
@@ -48,9 +51,8 @@ def velocidade():
     else:
         velocidade_jogo = 50    
 
-
 def exibe_mensagem(msg, tamanho, cor):
-    fonte = pygame.font.SysFont('comicsansms', tamanho, True, False)
+    fonte = pygame.font.SysFont('zrnic', tamanho, True, False)
     mensagem = f'{msg}'
     texto_formatado = fonte.render(mensagem, True, cor)
     return texto_formatado
@@ -66,7 +68,6 @@ def reiniciar_jogo():
     pombo.rect.x = largura
     escolha_obstaculo = choice([0, 1])
     pygame.mixer.music.play(-1)
-
 
 class Dino(pygame.sprite.Sprite):
     def __init__(self):
@@ -96,12 +97,6 @@ class Dino(pygame.sprite.Sprite):
             if self.rect.y <= 200:
                 self.pulo = False
             self.rect.y -= 20
-        # else:
-        #     if self.rect.y < self.pos_y_inicial:
-        #         self.rect.y += 20
-        #     else:
-        #         self.rect.y = self.pos_y_inicial
-
         if self.rect.y > self.pos_y_inicial:
             self.rect.y = self.pos_y_inicial
 
@@ -109,7 +104,6 @@ class Dino(pygame.sprite.Sprite):
             self.index_lista = 0
         self.index_lista += 0.25
         self.image = self.imagens_jonas[int(self.index_lista)]
-
 
 class Nuvens(pygame.sprite.Sprite):
     def __init__(self):
@@ -125,7 +119,6 @@ class Nuvens(pygame.sprite.Sprite):
             self.rect.x = largura
             self.rect.y = randrange(50, 200, 50)
         self.rect.x -= velocidade_jogo
-
 
 class Chao(pygame.sprite.Sprite):
     def __init__(self, pos_x):
@@ -206,9 +199,6 @@ for i in range(4):
     nuvem = Nuvens()
     todas_as_sprites.add(nuvem)
 
-#for i in range(largura * 2 // 64):
-    #chao = Chao(i)
-    #todas_as_sprites.add(chao)
 
 pau = Pau()
 todas_as_sprites.add(pau)
@@ -224,17 +214,37 @@ relogio = pygame.time.Clock()
 
 
 def fundo():
-    if pontos >= 100:
-        imagem_fundo = pygame.image.load('MarcoZero.bmp').convert()
+     
+    if 0 <= pontos <= 200:
+        #(os.path.join(diretorio_imagens,
+        imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos, 'MarcoZero.bmp')).convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
         tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)
-        
-    if 0 <= pontos <= 100:
-        imagem_fundo = pygame.image.load('moeda.bmp').convert()
+
+    if pontos >= 200 and pontos <= 300:
+        imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'RuaBJ.jpg')).convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
         tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)
+
+    if pontos >= 300 and pontos <= 400:
+        imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'Igreja.png')).convert()
+        imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+        tela.blit(imagem_fundo, (0, 0))
+        todas_as_sprites.draw(tela)
+
+    if pontos >= 400 and pontos <= 500:
+        imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'Praia.jpg')).convert()
+        imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+        tela.blit(imagem_fundo, (0, 0))
+        todas_as_sprites.draw(tela)         
+
+    if pontos >= 500:
+        imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'MarcoRecife.png')).convert()
+        imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
+        tela.blit(imagem_fundo, (0, 0))
+        todas_as_sprites.draw(tela)      
 
 
 while True:
@@ -246,7 +256,7 @@ while True:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
-            exit()
+            exit()    
         if event.type == KEYDOWN:
             if event.key == K_SPACE and colidiu is False:
                 if dino.rect.y != dino.pos_y_inicial:
@@ -279,24 +289,24 @@ while True:
     if colidiu is True:
         if pontos % 100 == 0:
             pontos += 1
-        game_over = exibe_mensagem('GAME OVER', 40, (255, 255, 255))
-        tela.blit(game_over, (largura//2, altura//2))
-        restart = exibe_mensagem('Precione r para reiniciar', 20, (255, 255, 255))
-        tela.blit(restart, (largura//2, (altura//2) + 60))
+        game_over = exibe_mensagem('Você perdeu!', 50, (255,0,0))
+        tela.blit(game_over, (largura/3, altura/2))
+        restart = exibe_mensagem('Pressione r para reiniciar', 30, (255,0,0))
+        tela.blit(restart, (largura/3.3, (altura/2) + 60))
         pygame.mixer.music.stop()
 
     else:
         pontos += 0.2
         todas_as_sprites.update()
-        texto_pontos = exibe_mensagem("%.0f" % pontos, 50, (255, 255, 255))
+        texto_pontos = exibe_mensagem("%.0f" % pontos, 80, (255, 255, 255))
 
     pontos = round(pontos, 2)
 
     if pontos % 100 == 0.0:
         som_pontuacao.play()
         velocidade_jogo += 5
-        print("Adicionou 5")
 
-    tela.blit(texto_pontos, (largura/2, 30))
+    tela.blit(texto_pontos, (largura/2, 0))
+
 
     pygame.display.flip()
