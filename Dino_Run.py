@@ -215,32 +215,32 @@ relogio = pygame.time.Clock()
 
 def fundo():
      
-    if 0 <= pontos <= 200:
+    if 0 <= pontos <= 100:
         #(os.path.join(diretorio_imagens,
         imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos, 'MarcoZero.bmp')).convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
         tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)
 
-    if pontos >= 200 and pontos <= 300:
+    if pontos >= 100 and pontos <= 200:
         imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'RuaBJ.jpg')).convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
         tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)
 
-    if pontos >= 300 and pontos <= 400:
+    if pontos >= 200 and pontos <= 300:
         imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'Igreja.png')).convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
         tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)
 
-    if pontos >= 400 and pontos <= 500:
+    if pontos >= 300 and pontos <= 400:
         imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'Praia.jpg')).convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
         tela.blit(imagem_fundo, (0, 0))
         todas_as_sprites.draw(tela)         
 
-    if pontos >= 500:
+    if pontos >= 400:
         imagem_fundo = pygame.image.load(os.path.join(diretorio_fundos,'MarcoRecife.png')).convert()
         imagem_fundo = pygame.transform.scale(imagem_fundo, (largura, altura))
         tela.blit(imagem_fundo, (0, 0))
